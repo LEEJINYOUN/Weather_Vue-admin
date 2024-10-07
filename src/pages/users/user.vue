@@ -67,7 +67,7 @@ onMounted(() => {
             <td class="px-6 py-4">{{ item.email }}</td>
             <td class="px-6 py-4">{{ item.name }}</td>
             <td class="px-6 py-4">{{ item.created_at }}</td>
-            <td class="px-6 py-4">{{ item.image }}</td>
+            <td class="px-6 py-4">{{ item.image ?? "Null" }}</td>
           </tr>
         </tbody>
       </table>
