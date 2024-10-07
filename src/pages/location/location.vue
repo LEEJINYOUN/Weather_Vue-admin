@@ -1,7 +1,4 @@
 <script setup></script>
-
 <template>
-  <div>
-    <router-view />
-  </div>
+  <div>지역 페이지</div>
 </template>
