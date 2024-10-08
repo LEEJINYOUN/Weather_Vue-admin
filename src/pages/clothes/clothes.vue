@@ -10,6 +10,7 @@ import {
   ClothesUpdateApi,
   GetClothesListApi,
 } from "@/api/clothes";
+import { imageUrl } from "@/constants/envName";
 
 // 변수
 const clothesList = ref([]);
@@ -203,7 +204,14 @@ onMounted(() => {
             <td class="px-6 py-4">{{ item.name }}</td>
             <td class="px-6 py-4">{{ item.startTemp }}</td>
             <td class="px-6 py-4">{{ item.endTemp }}</td>
-            <td class="px-6 py-4">{{ item.image }}</td>
+            <td class="px-6 py-4">
+              <img
+                width="50px"
+                height="50px"
+                :src="`${imageUrl}/clothes/${item.image}`"
+                alt=""
+              />
+            </td>
             <td class="px-6 py-4 flex gap-5">
               <button @click="clothesUpdateMode(item)">수정</button>
               <button @click="clothesDelete(item)">삭제</button>
