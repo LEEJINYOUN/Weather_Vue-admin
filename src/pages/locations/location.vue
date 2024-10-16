@@ -12,25 +12,35 @@ import TitleItem from "@/components/text/TitleItem.vue";
 import { onMounted } from "vue";
 import { ref } from "vue";
 
-// 변수
-const countryList = ref([]);
-const countryListView = ref("");
-const countrySelect = ref("");
-const locationList = ref([]);
+// 저장 변수
 const countryId = ref("");
+const createFilterItems = ref([]);
 const locationName = ref("");
+
+// 리스트 테이블 변수
+const listFilter = ref("0");
+const listFilterItems = ref([]);
+const filteredList = ref([]);
+
+// 기타 변수
 const isLoading = ref(false);
 const isEdit = ref(false);
 const editId = ref(0);
 
-// 나라별 모든 지역 조회
+// 리스트 필터 변경
+const filterChangeSelect = () => {
+  getLocationList(listFilter.value);
+};
+
+// 모든 나라 조회
 const getCountryList = async () => {
   try {
     const result = await GetAllCountryApi();
 
     if (result.status == 200) {
       isLoading.value = true;
-      countryList.value = result.data;
+      createFilterItems.value = result.data;
+      listFilterItems.value = result.data;
     } else {
       console.log(result);
     }
@@ -40,17 +50,15 @@ const getCountryList = async () => {
 };
 
 // 나라별 모든 지역 조회
-const getAllLocation = async () => {
+const getLocationList = async () => {
   try {
-    if (countryListView.value !== "") {
-      const result = await GetAllLocationApi(countryListView.value);
+    const result = await GetAllLocationApi(listFilter.value);
 
-      if (result.status == 200) {
-        locationList.value = result.data;
-        console.log(result.data);
-      } else {
-        console.log(result);
-      }
+    if (result.status == 200) {
+      isLoading.value = true;
+      filteredList.value = result.data;
+    } else {
+      console.log(result);
     }
   } catch (e) {
     console.log(e);
@@ -61,16 +69,17 @@ const getAllLocation = async () => {
 const submit = async () => {
   try {
     let value = {
-      countryId: countryId.value,
       locationName: locationName.value,
+      countryId: countryId.value,
     };
 
     const result = await CreateLocationApi(value);
 
     if (result.status == 201) {
-      // getCountryList();
-      countryId.value = "";
+      getCountryList();
+      getLocationList();
       locationName.value = "";
+      countryId.value = "";
     } else {
       console.log(result);
     }
@@ -79,7 +88,7 @@ const submit = async () => {
   }
 };
 
-// 특정 지역 수정 모드
+// 지역 수정 모드
 const locationUpdateMode = (data) => {
   isEdit.value = true;
   countryId.value = data.countryId;
@@ -92,16 +101,16 @@ const locationUpdateMode = (data) => {
 const locationUpdate = async () => {
   try {
     let value = {
-      countryId: countryId.value,
       locationName: locationName.value,
+      countryId: countryId.value,
     };
     const result = await UpdateLocationApi(value, editId.value);
     if (result.status == 200) {
-      getClothesList();
+      getLocationList();
       isEdit.value = false;
       editId.value = 0;
-      countryId.value = "";
       locationName.value = "";
+      countryId.value = "";
     } else {
       console.log(result);
     }
@@ -115,7 +124,7 @@ const locationDelete = async (id) => {
   try {
     const result = await DeleteLocationApi(id);
     if (result.status == 200) {
-      // getClothesList();
+      getLocationList();
     } else {
       console.log(result);
     }
@@ -126,6 +135,7 @@ const locationDelete = async (id) => {
 
 onMounted(() => {
   getCountryList();
+  getLocationList();
 });
 </script>
 <template>
@@ -139,13 +149,17 @@ onMounted(() => {
       @submit.prevent="isEdit == false ? submit() : locationUpdate()"
     >
       <select
-        id="country"
-        v-model="countryId"
+        id="countryId"
         required
+        v-model="countryId"
         class="w-auto bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <option value="" selected>나라 선택</option>
-        <option v-for="(item, key) in countryList" :key="key" :value="item.id">
+        <option
+          v-for="(item, key) in createFilterItems"
+          :key="key"
+          :value="item.id"
+        >
           {{ item.name }}
         </option>
       </select>
@@ -156,21 +170,26 @@ onMounted(() => {
       />
     </form>
 
-    <!-- 나라 선택 -->
-    <div>
+    <!-- 리스트 필터 -->
+    <div class="flex justify-end mb-5">
       <select
-        id="listView"
-        v-model="countryListView"
+        id="listFilter"
         required
-        @click="getAllLocation"
+        v-model="listFilter"
+        @change="filterChangeSelect"
         class="w-auto bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
-        <option value="" selected>나라 선택</option>
-        <option v-for="(item, key) in countryList" :key="key" :value="item.id">
+        <option value="0" selected>모두</option>
+        <option
+          v-for="(item, key) in listFilterItems"
+          :key="key"
+          :value="item.id"
+        >
           {{ item.name }}
         </option>
       </select>
     </div>
+
     <!-- 리스트 테이블 -->
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table
@@ -191,7 +210,7 @@ onMounted(() => {
         <!-- 테이블 값 -->
         <tbody v-if="isLoading == true">
           <tr
-            v-for="(item, key) in locationList"
+            v-for="(item, key) in filteredList"
             :key="key"
             class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
           >
