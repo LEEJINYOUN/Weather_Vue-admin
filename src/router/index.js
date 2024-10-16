@@ -3,6 +3,7 @@ import dashboard from "@/pages/master/dashboard.vue";
 import home from "@/pages/home/home.vue";
 import user from "@/pages/users/user.vue";
 import clothes from "@/pages/clothes/clothes.vue";
+import country from "@/pages/countries/country.vue";
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
         name: "clothes",
         path: "/clothes",
         component: clothes,
+      },
+      {
+        name: "country",
+        path: "/country",
+        component: country,
       },
     ],
   },

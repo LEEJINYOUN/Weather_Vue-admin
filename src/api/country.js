@@ -1,10 +1,10 @@
 import { backendUrl } from "@/constants/envName";
 import axios from "axios";
 
-const totalUrl = backendUrl + "/clothes";
+const totalUrl = backendUrl + "/country";
 
-// 옷 리스트 가져오기
-export const GetClothesListApi = async () => {
+// 모든 나라 조회
+export const GetAllCountryApi = async () => {
   try {
     const result = await axios.get(totalUrl + "/all");
 
@@ -18,8 +18,8 @@ export const GetClothesListApi = async () => {
   }
 };
 
-// 옷 저장
-export const ClothesSaveApi = async (value) => {
+// 나라 등록
+export const CreateCountryApi = async (value) => {
   try {
     const result = await axios.post(totalUrl + "/create", value);
 
@@ -33,8 +33,8 @@ export const ClothesSaveApi = async (value) => {
   }
 };
 
-// 옷 수정
-export const ClothesUpdateApi = async (value, id) => {
+// 특정 나라 수정
+export const UpdateCountryApi = async (value, id) => {
   try {
     const result = await axios.put(totalUrl + `/${id}`, value);
 
@@ -48,8 +48,8 @@ export const ClothesUpdateApi = async (value, id) => {
   }
 };
 
-// 옷 삭제
-export const ClothesDeleteApi = async (id) => {
+// 특정 나라 삭제
+export const DeleteCountryApi = async (id) => {
   try {
     const result = await axios.delete(totalUrl + `/${id}`);
 

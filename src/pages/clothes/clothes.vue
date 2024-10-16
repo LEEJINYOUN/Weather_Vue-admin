@@ -214,7 +214,7 @@ onMounted(() => {
             </td>
             <td class="px-6 py-4 flex gap-5">
               <button @click="clothesUpdateMode(item)">수정</button>
-              <button @click="clothesDelete(item)">삭제</button>
+              <button @click="clothesDelete(item.id)">삭제</button>
             </td>
           </tr>
         </tbody>
