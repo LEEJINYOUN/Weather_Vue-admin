@@ -1,9 +1,10 @@
 import { createWebHistory, createRouter } from "vue-router";
 import dashboard from "@/pages/master/dashboard.vue";
-import home from "@/pages/home/home.vue";
-import user from "@/pages/users/user.vue";
-import clothes from "@/pages/clothes/clothes.vue";
-import country from "@/pages/countries/country.vue";
+import Home from "@/pages/home/home.vue";
+import User from "@/pages/users/user.vue";
+import Clothes from "@/pages/clothes/clothes.vue";
+import Country from "@/pages/countries/country.vue";
+import Location from "@/pages/locations/location.vue";
 
 const routes = [
   {
@@ -14,22 +15,27 @@ const routes = [
       {
         name: "home",
         path: "/home",
-        component: home,
+        component: Home,
       },
       {
         name: "users",
         path: "/users",
-        component: user,
-      },
-      {
-        name: "clothes",
-        path: "/clothes",
-        component: clothes,
+        component: User,
       },
       {
         name: "country",
         path: "/country",
-        component: country,
+        component: Country,
+      },
+      {
+        name: "location",
+        path: "/location",
+        component: Location,
+      },
+      {
+        name: "clothes",
+        path: "/clothes",
+        component: Clothes,
       },
     ],
   },

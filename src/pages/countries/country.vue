@@ -26,7 +26,6 @@ const getCountryList = async () => {
     if (result.status == 200) {
       isLoading.value = true;
       countryList.value = result.data;
-      countryList.value.reverse();
     } else {
       console.log(result);
     }

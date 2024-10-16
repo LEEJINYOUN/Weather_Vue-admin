@@ -47,7 +47,6 @@ onMounted(() => {
             <th scope="col" class="px-6 py-3">이메일</th>
             <th scope="col" class="px-6 py-3">이름</th>
             <th scope="col" class="px-6 py-3">생성일</th>
-            <th scope="col" class="px-6 py-3">이미지</th>
           </tr>
         </thead>
 
@@ -67,7 +66,6 @@ onMounted(() => {
             <td class="px-6 py-4">{{ item.email }}</td>
             <td class="px-6 py-4">{{ item.name }}</td>
             <td class="px-6 py-4">{{ item.created_at }}</td>
-            <td class="px-6 py-4">{{ item.image ?? "Null" }}</td>
           </tr>
         </tbody>
       </table>

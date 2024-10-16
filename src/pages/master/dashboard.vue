@@ -17,8 +17,9 @@
             <!-- <div class="h-[calc(100%-50px)]"> -->
             <router-link to="/home">홈</router-link>
             <router-link to="/users">유저</router-link>
-            <router-link to="/clothes">옷</router-link>
             <router-link to="/country">나라</router-link>
+            <router-link to="/location">지역</router-link>
+            <router-link to="/clothes">옷</router-link>
             <!-- </div> -->
           </div>
         </div>
