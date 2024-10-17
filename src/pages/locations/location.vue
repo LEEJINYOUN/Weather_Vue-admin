@@ -1,9 +1,10 @@
 <script setup>
 import { GetAllCountryApi } from "@/api/country";
 import {
+  GetAllLocationApi,
+  GetAllLocationByCountryApi,
   CreateLocationApi,
   DeleteLocationApi,
-  GetAllLocationApi,
   UpdateLocationApi,
 } from "@/api/location";
 import BlueButton from "@/components/button/BlueButton.vue";
@@ -18,7 +19,7 @@ const createFilterItems = ref([]);
 const locationName = ref("");
 
 // 리스트 테이블 변수
-const listFilter = ref("0");
+const listFilter = ref("all");
 const listFilterItems = ref([]);
 const filteredList = ref([]);
 
@@ -49,10 +50,26 @@ const getCountryList = async () => {
   }
 };
 
+// 모든 지역 조회
+const getAllLocationList = async () => {
+  try {
+    const result = await GetAllLocationApi();
+
+    if (result.status == 200) {
+      isLoading.value = true;
+      filteredList.value = result.data;
+    } else {
+      console.log(result);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // 나라별 모든 지역 조회
 const getLocationList = async () => {
   try {
-    const result = await GetAllLocationApi(listFilter.value);
+    const result = await GetAllLocationByCountryApi(listFilter.value);
 
     if (result.status == 200) {
       isLoading.value = true;
@@ -135,7 +152,11 @@ const locationDelete = async (id) => {
 
 onMounted(() => {
   getCountryList();
-  getLocationList();
+  if (listFilter.value == "all") {
+    getAllLocationList();
+  } else {
+    getLocationList();
+  }
 });
 </script>
 <template>
@@ -179,7 +200,7 @@ onMounted(() => {
         @change="filterChangeSelect"
         class="w-auto bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
-        <option value="0" selected>모두</option>
+        <option value="all" selected>모두</option>
         <option
           v-for="(item, key) in listFilterItems"
           :key="key"

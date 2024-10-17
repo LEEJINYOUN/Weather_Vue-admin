@@ -3,10 +3,25 @@ import axios from "axios";
 
 const totalUrl = backendUrl + "/location";
 
-// 나라별 모든 지역 조회
-export const GetAllLocationApi = async (countryId) => {
+// 모든 지역 조회
+export const GetAllLocationApi = async () => {
   try {
-    const result = await axios.get(totalUrl + `/all/${countryId}`);
+    const result = await axios.get(totalUrl + `/all`);
+
+    if (result.status == 200) {
+      return result;
+    } else {
+      console.log("api 호출 에러 : " + result);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// 나라별 지역 조회
+export const GetAllLocationByCountryApi = async (countryId) => {
+  try {
+    const result = await axios.get(totalUrl + `/${countryId}`);
 
     if (result.status == 200) {
       return result;
