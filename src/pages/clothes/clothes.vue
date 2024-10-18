@@ -126,7 +126,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div>
+  <div class="h-[calc(100vh-150px)]">
     <!-- 타이틀 -->
     <TitleItem title="옷 리스트" />
     <!-- 저장 폼 -->
@@ -168,7 +168,9 @@ onMounted(() => {
     </form>
 
     <!-- 리스트 테이블 -->
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div
+      class="relative shadow-md sm:rounded-lg mt-5 max-h-[calc(100%-150px)] overflow-auto"
+    >
       <table
         class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
       >
