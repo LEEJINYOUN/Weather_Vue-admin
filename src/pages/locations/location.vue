@@ -99,7 +99,6 @@ const submit = async () => {
 
     if (result.status == 201) {
       getCountryList();
-      getLocationList();
       locationName.value = "";
       countryId.value = "";
     } else {
