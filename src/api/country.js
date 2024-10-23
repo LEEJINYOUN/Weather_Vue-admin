@@ -21,7 +21,10 @@ export const GetAllCountryApi = async () => {
 // 나라 등록
 export const CreateCountryApi = async (value) => {
   try {
-    const result = await axios.post(totalUrl + "/create", value);
+    const { name } = value;
+    const result = await axios.post(totalUrl + "/create", {
+      name,
+    });
 
     if (result.status == 201) {
       return result;
@@ -34,9 +37,11 @@ export const CreateCountryApi = async (value) => {
 };
 
 // 특정 나라 수정
-export const UpdateCountryApi = async (value, id) => {
+export const UpdateCountryApi = async (value) => {
   try {
-    const result = await axios.put(totalUrl + `/${id}`, value);
+    const { id, name } = value;
+
+    const result = await axios.patch(totalUrl + `/${id}`, { name });
 
     if (result.status == 200) {
       return result;

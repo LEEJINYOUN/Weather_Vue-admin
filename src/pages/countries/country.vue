@@ -66,9 +66,11 @@ const countryUpdateMode = (data) => {
 const countryUpdate = async () => {
   try {
     let value = {
+      id: editId.value,
       name: countryName.value,
     };
-    const result = await UpdateCountryApi(value, editId.value);
+
+    const result = await UpdateCountryApi(value);
     if (result.status == 200) {
       getCountryList();
       isEdit.value = false;
