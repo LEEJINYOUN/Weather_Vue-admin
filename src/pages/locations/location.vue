@@ -42,6 +42,12 @@ const getCountryList = async () => {
       isLoading.value = true;
       createFilterItems.value = result.data;
       listFilterItems.value = result.data;
+
+      if (listFilter.value == "all") {
+        result.data.map((item) => {
+          filteredList.value.push(...item.locations);
+        });
+      }
     } else {
       console.log(result);
     }
@@ -50,21 +56,21 @@ const getCountryList = async () => {
   }
 };
 
-// 모든 지역 조회
-const getAllLocationList = async () => {
-  try {
-    const result = await GetAllLocationApi();
+// // 모든 지역 조회
+// const getAllLocationList = async () => {
+//   try {
+//     const result = await GetAllLocationApi();
 
-    if (result.status == 200) {
-      isLoading.value = true;
-      filteredList.value = result.data;
-    } else {
-      console.log(result);
-    }
-  } catch (e) {
-    console.log(e);
-  }
-};
+//     if (result.status == 200) {
+//       isLoading.value = true;
+//       // filteredList.value = result.data;
+//     } else {
+//       console.log(result);
+//     }
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
 
 // 나라별 모든 지역 조회
 const getLocationList = async () => {
@@ -107,8 +113,10 @@ const submit = async () => {
 
 // 지역 수정 모드
 const locationUpdateMode = (data) => {
+  console.log(data);
+
   isEdit.value = true;
-  countryId.value = data.countryId;
+  // countryId.value = data.countryId;
   locationName.value = data.locationName;
 
   editId.value = data.id;
@@ -118,8 +126,8 @@ const locationUpdateMode = (data) => {
 const locationUpdate = async () => {
   try {
     let value = {
-      locationName: locationName.value,
       countryId: countryId.value,
+      locationName: locationName.value,
     };
     const result = await UpdateLocationApi(value, editId.value);
     if (result.status == 200) {
@@ -152,11 +160,11 @@ const locationDelete = async (id) => {
 
 onMounted(() => {
   getCountryList();
-  if (listFilter.value == "all") {
-    getAllLocationList();
-  } else {
-    getLocationList();
-  }
+  // if (listFilter.value == "all") {
+  //   getAllLocationList();
+  // } else {
+  //   getLocationList();
+  // }
 });
 </script>
 <template>

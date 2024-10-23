@@ -36,7 +36,11 @@ export const GetAllLocationByCountryApi = async (countryId) => {
 // 지역 등록
 export const CreateLocationApi = async (value) => {
   try {
-    const result = await axios.post(totalUrl + "/create", value);
+    const { locationName, countryId } = value;
+
+    const result = await axios.post(totalUrl + `/create/${countryId}`, {
+      locationName,
+    });
 
     if (result.status == 201) {
       return result;
@@ -51,13 +55,19 @@ export const CreateLocationApi = async (value) => {
 // 특정 지역 수정
 export const UpdateLocationApi = async (value, id) => {
   try {
-    const result = await axios.put(totalUrl + `/${id}`, value);
+    const { countryId, locationName } = value;
 
-    if (result.status == 200) {
-      return result;
-    } else {
-      console.log("api 호출 에러 : " + result);
-    }
+    console.log(countryId, locationName, id);
+
+    // const result = await axios.patch(totalUrl + `/${id}`, {
+    //   locationName,
+    // });
+
+    // if (result.status == 200) {
+    //   return result;
+    // } else {
+    //   console.log("api 호출 에러 : " + result);
+    // }
   } catch (e) {
     console.log(e);
   }
