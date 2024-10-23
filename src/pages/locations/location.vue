@@ -1,7 +1,6 @@
 <script setup>
 import { GetAllCountryApi } from "@/api/country";
 import {
-  GetAllLocationApi,
   GetAllLocationByCountryApi,
   CreateLocationApi,
   DeleteLocationApi,
@@ -233,7 +232,6 @@ onMounted(() => {
           <tr>
             <th scope="col" class="px-6 py-3">번호</th>
             <th scope="col" class="px-6 py-3">지역 이름</th>
-            <th scope="col" class="px-6 py-3">나라 번호</th>
             <th scope="col" class="px-6 py-3">Action</th>
           </tr>
         </thead>
@@ -252,7 +250,6 @@ onMounted(() => {
               {{ item.id }}
             </th>
             <td class="px-6 py-4">{{ item.locationName }}</td>
-            <td class="px-6 py-4">{{ item.countryId }}</td>
             <td class="px-6 py-4 flex gap-5">
               <button @click="locationUpdateMode(item)">수정</button>
               <button @click="locationDelete(item.id)">삭제</button>
