@@ -52,27 +52,6 @@ export const CreateLocationApi = async (value) => {
   }
 };
 
-// 특정 지역 수정
-export const UpdateLocationApi = async (value, id) => {
-  try {
-    const { countryId, locationName } = value;
-
-    console.log(countryId, locationName, id);
-
-    // const result = await axios.patch(totalUrl + `/${id}`, {
-    //   locationName,
-    // });
-
-    // if (result.status == 200) {
-    //   return result;
-    // } else {
-    //   console.log("api 호출 에러 : " + result);
-    // }
-  } catch (e) {
-    console.log(e);
-  }
-};
-
 // 특정 지역 삭제
 export const DeleteLocationApi = async (id) => {
   try {

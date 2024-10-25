@@ -36,7 +36,7 @@ export const ClothesSaveApi = async (value) => {
 // 옷 수정
 export const ClothesUpdateApi = async (value, id) => {
   try {
-    const result = await axios.put(totalUrl + `/${id}`, value);
+    const result = await axios.patch(totalUrl + `/${id}`, value);
 
     if (result.status == 200) {
       return result;

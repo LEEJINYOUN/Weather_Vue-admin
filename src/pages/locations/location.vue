@@ -4,7 +4,7 @@ import {
   GetAllLocationByCountryApi,
   CreateLocationApi,
   DeleteLocationApi,
-  UpdateLocationApi,
+  GetAllLocationApi,
 } from "@/api/location";
 import BlueButton from "@/components/button/BlueButton.vue";
 import InputItem from "@/components/form/InputItem.vue";
@@ -24,12 +24,19 @@ const filteredList = ref([]);
 
 // 기타 변수
 const isLoading = ref(false);
-const isEdit = ref(false);
-const editId = ref(0);
 
 // 리스트 필터 변경
 const filterChangeSelect = () => {
   getLocationList(listFilter.value);
+};
+
+// 리스트 새로고침
+const listRefresh = () => {
+  if (listFilter.value == "all") {
+    getAllLocationList();
+  } else {
+    getLocationList(listFilter.value);
+  }
 };
 
 // 모든 나라 조회
@@ -41,12 +48,6 @@ const getCountryList = async () => {
       isLoading.value = true;
       createFilterItems.value = result.data;
       listFilterItems.value = result.data;
-
-      if (listFilter.value == "all") {
-        result.data.map((item) => {
-          filteredList.value.push(...item.locations);
-        });
-      }
     } else {
       console.log(result);
     }
@@ -55,30 +56,32 @@ const getCountryList = async () => {
   }
 };
 
-// // 모든 지역 조회
-// const getAllLocationList = async () => {
-//   try {
-//     const result = await GetAllLocationApi();
-
-//     if (result.status == 200) {
-//       isLoading.value = true;
-//       // filteredList.value = result.data;
-//     } else {
-//       console.log(result);
-//     }
-//   } catch (e) {
-//     console.log(e);
-//   }
-// };
-
-// 나라별 모든 지역 조회
-const getLocationList = async () => {
+// 모든 지역 조회
+const getAllLocationList = async () => {
   try {
-    const result = await GetAllLocationByCountryApi(listFilter.value);
+    const result = await GetAllLocationApi();
 
     if (result.status == 200) {
       isLoading.value = true;
       filteredList.value = result.data;
+    } else {
+      console.log(result);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// 나라별 모든 지역 조회
+const getLocationList = async (countryId) => {
+  try {
+    const result = await GetAllLocationByCountryApi(countryId);
+
+    if (result.status == 200) {
+      isLoading.value = true;
+      filteredList.value = result.data.sort((a, b) =>
+        a.locationName > b.locationName ? 1 : -1
+      );
     } else {
       console.log(result);
     }
@@ -98,40 +101,7 @@ const submit = async () => {
     const result = await CreateLocationApi(value);
 
     if (result.status == 201) {
-      getCountryList();
-      locationName.value = "";
-      countryId.value = "";
-    } else {
-      console.log(result);
-    }
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-// 지역 수정 모드
-const locationUpdateMode = (data) => {
-  console.log(data);
-
-  isEdit.value = true;
-  // countryId.value = data.countryId;
-  locationName.value = data.locationName;
-
-  editId.value = data.id;
-};
-
-// 특정 지역 수정
-const locationUpdate = async () => {
-  try {
-    let value = {
-      countryId: countryId.value,
-      locationName: locationName.value,
-    };
-    const result = await UpdateLocationApi(value, editId.value);
-    if (result.status == 200) {
-      getLocationList();
-      isEdit.value = false;
-      editId.value = 0;
+      listRefresh();
       locationName.value = "";
       countryId.value = "";
     } else {
@@ -147,7 +117,7 @@ const locationDelete = async (id) => {
   try {
     const result = await DeleteLocationApi(id);
     if (result.status == 200) {
-      getLocationList();
+      listRefresh();
     } else {
       console.log(result);
     }
@@ -158,11 +128,7 @@ const locationDelete = async (id) => {
 
 onMounted(() => {
   getCountryList();
-  // if (listFilter.value == "all") {
-  //   getAllLocationList();
-  // } else {
-  //   getLocationList();
-  // }
+  listRefresh();
 });
 </script>
 <template>
@@ -171,10 +137,7 @@ onMounted(() => {
     <TitleItem title="지역 리스트" />
 
     <!-- 저장 폼 -->
-    <form
-      class="flex justify-center gap-10"
-      @submit.prevent="isEdit == false ? submit() : locationUpdate()"
-    >
+    <form class="flex justify-center gap-10" @submit.prevent="submit()">
       <select
         id="countryId"
         required
@@ -191,10 +154,7 @@ onMounted(() => {
         </option>
       </select>
       <InputItem type="text" placeholder="지역 이름" v-model="locationName" />
-      <BlueButton
-        value="submit"
-        :text="isEdit == false ? '저장하기' : '수정하기'"
-      />
+      <BlueButton value="submit" text="저장하기" />
     </form>
 
     <!-- 리스트 필터 -->
@@ -250,7 +210,6 @@ onMounted(() => {
             </th>
             <td class="px-6 py-4">{{ item.locationName }}</td>
             <td class="px-6 py-4 flex gap-5">
-              <button @click="locationUpdateMode(item)">수정</button>
               <button @click="locationDelete(item.id)">삭제</button>
             </td>
           </tr>
