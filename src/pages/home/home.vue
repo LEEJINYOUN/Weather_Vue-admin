@@ -1,4 +1,12 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+import Login from "../auth/login.vue";
+
+const isLogin = ref(false);
+</script>
 <template>
-  <div>메인 페이지</div>
+  <div>
+    <Login v-if="!isLogin" />
+    <div v-if="isLogin">로그인 함</div>
+  </div>
 </template>
