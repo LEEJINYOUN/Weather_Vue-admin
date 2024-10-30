@@ -45,8 +45,14 @@ const submit = async () => {
       // 유저정보 저장
       authStore.setUserInfo(getUserInfo);
 
-      // 새로고침
-      router.go(0);
+      let getUser = JSON.parse(localStorage.getItem("userInfo"));
+
+      // 경로 이동
+      if (getUser.role == "admin") {
+        router.replace("/dashboard");
+      } else {
+        router.go(0);
+      }
     } else if (result.status == 422) {
       // 에러 처리
       errorMessageHandling(result.response.data);

@@ -1,7 +1,20 @@
 <script setup>
+import { LogoutApi } from "@/api/user";
 import GrayButton from "../button/GrayButton.vue";
+import router from "@/router";
 
-defineProps(["logout"]);
+// 로그아웃
+const logout = async () => {
+  try {
+    const result = await LogoutApi();
+    if (result.status == 201) {
+      localStorage.clear();
+      router.go(0);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
 </script>
 
 <template>
