@@ -5,18 +5,12 @@ import Clothes from "@/pages/clothes/clothes.vue";
 import Country from "@/pages/countries/country.vue";
 import Location from "@/pages/locations/location.vue";
 import Home from "@/pages/home/home.vue";
-import Register from "@/pages/auth/register.vue";
 
 const routes = [
   {
     name: "home",
     path: "/",
     component: Home,
-  },
-  {
-    name: "register",
-    path: "/register",
-    component: Register,
   },
 ];
 
