@@ -1,15 +1,33 @@
 <script setup>
 import { ref } from "vue";
+import router from "@/router";
+import { GetUserApi, LoginApi } from "@/api/user";
+import { useAuthStore } from "@/stores/auth";
 import RedButton from "@/components/button/RedButton.vue";
 import InputItem from "@/components/form/InputItem.vue";
-import { LoginApi } from "@/api/user";
 import ErrorMessage from "@/components/text/ErrorMessage.vue";
+
+// storage
+const authStore = useAuthStore();
 
 // 변수
 const email = ref("");
 const password = ref("");
 const emailErrorMessage = ref("");
 const passwordErrorMessage = ref("");
+
+// 에러 메세지 처리
+const errorMessageHandling = (data) => {
+  const { objectOrError, descriptionOrOptions } = data;
+
+  if (objectOrError == "이메일 오류") {
+    emailErrorMessage.value = descriptionOrOptions;
+    passwordErrorMessage.value = "";
+  } else if (objectOrError == "비밀번호 오류") {
+    emailErrorMessage.value = "";
+    passwordErrorMessage.value = descriptionOrOptions;
+  }
+};
 
 // 로그인
 const submit = async () => {
@@ -21,20 +39,17 @@ const submit = async () => {
     const result = await LoginApi(value);
 
     if (result.status == 201) {
-      console.log(result);
+      // 유저 정보 가져오기
+      const getUserInfo = await GetUserApi(result.data.result);
+
+      // 유저정보 저장
+      authStore.setUserInfo(getUserInfo);
+
+      // 새로고침
+      router.go(0);
     } else if (result.status == 422) {
-      const { objectOrError, descriptionOrOptions } = result.response.data;
-
-      if (objectOrError == "이메일 오류") {
-        emailErrorMessage.value = descriptionOrOptions;
-        passwordErrorMessage.value = "";
-      } else if (objectOrError == "비밀번호 오류") {
-        emailErrorMessage.value = "";
-        passwordErrorMessage.value = descriptionOrOptions;
-      }
-
-      console.log("이메일 : ", emailErrorMessage.value);
-      console.log("비밀번호 : ", passwordErrorMessage.value);
+      // 에러 처리
+      errorMessageHandling(result.response.data);
     }
   } catch (e) {
     console.log(e);
