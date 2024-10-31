@@ -8,6 +8,12 @@ import {
 } from "@/api/location";
 import BlueButton from "@/components/button/BlueButton.vue";
 import InputItem from "@/components/form/InputItem.vue";
+import FormLayout from "@/components/layout/FormLayout.vue";
+import ListTableLayout from "@/components/layout/ListTableLayout.vue";
+import MainLayout from "@/components/layout/MainLayout.vue";
+import TableBody from "@/components/table/TableBody.vue";
+import TableContent from "@/components/table/TableContent.vue";
+import TableHeader from "@/components/table/TableHeader.vue";
 import TitleItem from "@/components/text/TitleItem.vue";
 import { onMounted } from "vue";
 import { ref } from "vue";
@@ -132,17 +138,17 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="h-[calc(100vh-150px)]">
+  <MainLayout>
     <!-- 타이틀 -->
     <TitleItem title="지역 리스트" />
 
     <!-- 저장 폼 -->
-    <form class="flex justify-center gap-10" @submit.prevent="submit()">
+    <FormLayout add-class="xl:w-2/4" @submit.prevent="submit()">
       <select
         id="countryId"
         required
         v-model="countryId"
-        class="w-auto bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <option value="" selected>나라 선택</option>
         <option
@@ -155,16 +161,16 @@ onMounted(() => {
       </select>
       <InputItem type="text" placeholder="지역 이름" v-model="locationName" />
       <BlueButton value="submit" text="저장하기" />
-    </form>
+    </FormLayout>
 
     <!-- 리스트 필터 -->
-    <div class="flex justify-end mb-5">
+    <div class="flex justify-center my-5">
       <select
         id="listFilter"
         required
         v-model="listFilter"
         @change="filterChangeSelect"
-        class="w-auto bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        class="w-1/2 lg:w-1/3 xl:w-2/4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <option value="all" selected>모두</option>
         <option
@@ -178,43 +184,35 @@ onMounted(() => {
     </div>
 
     <!-- 리스트 테이블 -->
-    <div
-      class="relative shadow-md sm:rounded-lg mt-5 max-h-[calc(100%-150px)] overflow-auto"
-    >
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-      >
-        <!-- 테이블 제목 -->
-        <thead
-          class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-        >
-          <tr>
-            <th scope="col" class="px-6 py-3">번호</th>
-            <th scope="col" class="px-6 py-3">지역 이름</th>
-            <th scope="col" class="px-6 py-3">Action</th>
-          </tr>
-        </thead>
+    <ListTableLayout>
+      <!-- 테이블 제목 -->
+      <TableHeader>
+        <tr>
+          <TableContent type="title">번호</TableContent>
+          <TableContent type="title">지역 이름</TableContent>
+          <TableContent type="title">Action</TableContent>
+        </tr>
+      </TableHeader>
 
-        <!-- 테이블 값 -->
-        <tbody v-if="isLoading == true">
-          <tr
-            v-for="(item, key) in filteredList"
-            :key="key"
-            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+      <!-- 테이블 값 -->
+      <TableBody v-if="isLoading == true">
+        <tr
+          v-for="(item, key) in filteredList"
+          :key="key"
+          class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+        >
+          <th
+            scope="row"
+            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
           >
-            <th
-              scope="row"
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            >
-              {{ item.id }}
-            </th>
-            <td class="px-6 py-4">{{ item.locationName }}</td>
-            <td class="px-6 py-4 flex gap-5">
-              <button @click="locationDelete(item.id)">삭제</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+            {{ item.id }}
+          </th>
+          <TableContent type="content">{{ item.locationName }}</TableContent>
+          <TableContent type="content">
+            <button @click="locationDelete(item.id)">삭제</button>
+          </TableContent>
+        </tr>
+      </TableBody>
+    </ListTableLayout>
+  </MainLayout>
 </template>

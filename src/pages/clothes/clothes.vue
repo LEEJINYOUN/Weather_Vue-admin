@@ -11,6 +11,12 @@ import {
   GetClothesListApi,
 } from "@/api/clothes";
 import { imageUrl } from "@/constants/envName";
+import FormLayout from "@/components/layout/FormLayout.vue";
+import ListTableLayout from "@/components/layout/ListTableLayout.vue";
+import MainLayout from "@/components/layout/MainLayout.vue";
+import TableBody from "@/components/table/TableBody.vue";
+import TableContent from "@/components/table/TableContent.vue";
+import TableHeader from "@/components/table/TableHeader.vue";
 
 // 변수
 const clothesList = ref([]);
@@ -126,19 +132,20 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="h-[calc(100vh-150px)]">
+  <MainLayout>
     <!-- 타이틀 -->
     <TitleItem title="옷 리스트" />
+
     <!-- 저장 폼 -->
-    <form
-      class="flex justify-center gap-10"
+    <FormLayout
+      add-class="xl:w-3/4"
       @submit.prevent="isEdit == false ? submit() : clothesUpdate()"
     >
       <select
         id="category"
         required
         v-model="clothesCategory"
-        class="w-auto bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <option value="" selected>카테고리 선택</option>
         <option value="머리">머리</option>
@@ -165,62 +172,58 @@ onMounted(() => {
         value="submit"
         :text="isEdit == false ? '저장하기' : '수정하기'"
       />
-    </form>
+    </FormLayout>
 
     <!-- 리스트 테이블 -->
-    <div
-      class="relative shadow-md sm:rounded-lg mt-5 max-h-[calc(100%-150px)] overflow-auto"
-    >
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-      >
-        <!-- 테이블 제목 -->
-        <thead
-          class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-        >
-          <tr>
-            <th scope="col" class="px-6 py-3">번호</th>
-            <th scope="col" class="px-6 py-3">카테고리</th>
-            <th scope="col" class="px-6 py-3">이름</th>
-            <th scope="col" class="px-6 py-3">최저</th>
-            <th scope="col" class="px-6 py-3">최고</th>
-            <th scope="col" class="px-6 py-3">이미지</th>
-            <th scope="col" class="px-6 py-3">Action</th>
-          </tr>
-        </thead>
+    <ListTableLayout>
+      <!-- 테이블 제목 -->
+      <TableHeader>
+        <tr>
+          <TableContent type="title">번호</TableContent>
+          <TableContent type="title">카테고리</TableContent>
+          <TableContent type="title">이름</TableContent>
+          <TableContent type="title">최저</TableContent>
+          <TableContent type="title">최고</TableContent>
+          <TableContent type="title">이미지</TableContent>
+          <TableContent type="title">Action</TableContent>
+        </tr>
+      </TableHeader>
 
-        <!-- 테이블 값 -->
-        <tbody v-if="isLoading == true">
-          <tr
-            v-for="(item, key) in clothesList"
-            :key="key"
-            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+      <!-- 테이블 값 -->
+      <TableBody v-if="isLoading == true">
+        <tr
+          v-for="(item, key) in clothesList"
+          :key="key"
+          class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+        >
+          <th
+            scope="row"
+            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
           >
-            <th
-              scope="row"
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            >
-              {{ item.id }}
-            </th>
-            <td class="px-6 py-4">{{ item.category }}</td>
-            <td class="px-6 py-4">{{ item.name }}</td>
-            <td class="px-6 py-4">{{ item.startTemp }}</td>
-            <td class="px-6 py-4">{{ item.endTemp }}</td>
-            <td class="px-6 py-4">
-              <img
-                width="50px"
-                height="50px"
-                :src="`${imageUrl}/clothes/${item.image}`"
-                alt=""
-              />
-            </td>
-            <td class="px-6 py-4 flex gap-5">
-              <button @click="clothesUpdateMode(item)">수정</button>
-              <button @click="clothesDelete(item.id)">삭제</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+            {{ item.id }}
+          </th>
+          <TableContent type="content">{{ item.category }}</TableContent>
+          <TableContent type="content">{{ item.name }}</TableContent>
+          <TableContent type="content">{{ item.startTemp }}</TableContent>
+          <TableContent type="content">{{ item.endTemp }}</TableContent>
+          <TableContent type="content">
+            <img
+              class=""
+              width="70px"
+              height="70px"
+              :src="`${imageUrl}/clothes/${item.image}`"
+              alt=""
+          /></TableContent>
+          <TableContent type="content">
+            <button class="mx-2 p-1" @click="clothesUpdateMode(item)">
+              수정
+            </button>
+            <button class="mx-2 p-1" @click="clothesDelete(item.id)">
+              삭제
+            </button>
+          </TableContent>
+        </tr>
+      </TableBody>
+    </ListTableLayout>
+  </MainLayout>
 </template>

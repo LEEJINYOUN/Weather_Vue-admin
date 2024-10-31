@@ -3,6 +3,11 @@ import { onMounted } from "vue";
 import { ref } from "vue";
 import { GetUserListApi } from "@/api/user";
 import TitleItem from "@/components/text/TitleItem.vue";
+import ListTableLayout from "@/components/layout/ListTableLayout.vue";
+import MainLayout from "@/components/layout/MainLayout.vue";
+import TableHeader from "@/components/table/TableHeader.vue";
+import TableBody from "@/components/table/TableBody.vue";
+import TableContent from "@/components/table/TableContent.vue";
 
 // 변수
 const userList = ref([]);
@@ -25,52 +30,57 @@ const getUserList = async () => {
   }
 };
 
+// 날짜 포맷
+const dateFormat = (date) => {
+  const year = date.substring(0, 4);
+  const month = date.substring(5, 7);
+  const day = date.substring(8, 10);
+  const hour = date.substring(11, 13);
+  const minute = date.substring(14, 16);
+  return `${year}.${month}.${day} ${hour}:${minute}`;
+};
+
 onMounted(() => {
   getUserList();
 });
 </script>
 <template>
-  <div class="h-[calc(100vh-150px)]">
+  <MainLayout>
     <!-- 타이틀 -->
     <TitleItem title="유저 리스트" />
-    <!-- 리스트 테이블 -->
-    <div
-      class="relative shadow-md sm:rounded-lg mt-5 max-h-[calc(100%-150px)] overflow-auto"
-    >
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-      >
-        <!-- 테이블 제목 -->
-        <thead
-          class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-        >
-          <tr>
-            <th scope="col" class="px-6 py-3">번호</th>
-            <th scope="col" class="px-6 py-3">이메일</th>
-            <th scope="col" class="px-6 py-3">이름</th>
-            <th scope="col" class="px-6 py-3">생성일</th>
-          </tr>
-        </thead>
 
-        <!-- 테이블 값 -->
-        <tbody v-if="isLoading == true">
-          <tr
-            v-for="(item, key) in userList"
-            :key="key"
-            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+    <!-- 리스트 테이블 -->
+    <ListTableLayout>
+      <!-- 테이블 제목 -->
+      <TableHeader>
+        <tr>
+          <TableContent type="title">번호</TableContent>
+          <TableContent type="title">이메일</TableContent>
+          <TableContent type="title">이름</TableContent>
+          <TableContent type="title">생성일</TableContent>
+        </tr>
+      </TableHeader>
+
+      <!-- 테이블 값 -->
+      <TableBody v-if="isLoading == true">
+        <tr
+          v-for="(item, key) in userList"
+          :key="key"
+          class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+        >
+          <th
+            scope="row"
+            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
           >
-            <th
-              scope="row"
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            >
-              {{ item.id }}
-            </th>
-            <td class="px-6 py-4">{{ item.email }}</td>
-            <td class="px-6 py-4">{{ item.name }}</td>
-            <td class="px-6 py-4">{{ item.created_at }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+            {{ item.id }}
+          </th>
+          <TableContent type="content">{{ item.email }}</TableContent>
+          <TableContent type="content">{{ item.name }}</TableContent>
+          <TableContent type="content">{{
+            dateFormat(item.created_at)
+          }}</TableContent>
+        </tr>
+      </TableBody>
+    </ListTableLayout>
+  </MainLayout>
 </template>

@@ -7,6 +7,12 @@ import {
 } from "@/api/country";
 import BlueButton from "@/components/button/BlueButton.vue";
 import InputItem from "@/components/form/InputItem.vue";
+import FormLayout from "@/components/layout/FormLayout.vue";
+import ListTableLayout from "@/components/layout/ListTableLayout.vue";
+import MainLayout from "@/components/layout/MainLayout.vue";
+import TableBody from "@/components/table/TableBody.vue";
+import TableContent from "@/components/table/TableContent.vue";
+import TableHeader from "@/components/table/TableHeader.vue";
 import TitleItem from "@/components/text/TitleItem.vue";
 import { onMounted } from "vue";
 import { ref } from "vue";
@@ -104,13 +110,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="h-[calc(100vh-150px)]">
+  <MainLayout>
     <!-- 타이틀 -->
     <TitleItem title="나라 리스트" />
 
     <!-- 저장 폼 -->
-    <form
-      class="flex justify-center gap-10"
+    <FormLayout
+      add-class="xl:w-1/4"
       @submit.prevent="isEdit == false ? submit() : countryUpdate()"
     >
       <InputItem type="text" placeholder="나라 이름" v-model="countryName" />
@@ -118,47 +124,43 @@ onMounted(() => {
         value="submit"
         :text="isEdit == false ? '저장하기' : '수정하기'"
       />
-    </form>
+    </FormLayout>
 
     <!-- 리스트 테이블 -->
-    <div
-      class="relative shadow-md sm:rounded-lg mt-5 max-h-[calc(100%-150px)] overflow-auto"
-    >
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-      >
-        <!-- 테이블 제목 -->
-        <thead
-          class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-        >
-          <tr>
-            <th scope="col" class="px-6 py-3">번호</th>
-            <th scope="col" class="px-6 py-3">이름</th>
-            <th scope="col" class="px-6 py-3">Action</th>
-          </tr>
-        </thead>
+    <ListTableLayout>
+      <!-- 테이블 제목 -->
+      <TableHeader>
+        <tr>
+          <TableContent type="title">번호</TableContent>
+          <TableContent type="title">이름</TableContent>
+          <TableContent type="title">Action</TableContent>
+        </tr>
+      </TableHeader>
 
-        <!-- 테이블 값 -->
-        <tbody v-if="isLoading == true">
-          <tr
-            v-for="(item, key) in countryList"
-            :key="key"
-            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+      <!-- 테이블 값 -->
+      <TableBody v-if="isLoading == true">
+        <tr
+          v-for="(item, key) in countryList"
+          :key="key"
+          class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+        >
+          <th
+            scope="row"
+            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
           >
-            <th
-              scope="row"
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            >
-              {{ item.id }}
-            </th>
-            <td class="px-6 py-4">{{ item.name }}</td>
-            <td class="px-6 py-4 flex gap-5">
-              <button @click="countryUpdateMode(item)">수정</button>
-              <button @click="countryDelete(item.id)">삭제</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+            {{ item.id }}
+          </th>
+          <TableContent type="content">{{ item.name }}</TableContent>
+          <TableContent type="content">
+            <button class="mx-2 p-1" @click="countryUpdateMode(item)">
+              수정
+            </button>
+            <button class="mx-2 p-1" @click="countryDelete(item.id)">
+              삭제
+            </button></TableContent
+          >
+        </tr>
+      </TableBody>
+    </ListTableLayout>
+  </MainLayout>
 </template>
