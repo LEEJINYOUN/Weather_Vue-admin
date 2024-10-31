@@ -1,30 +1,45 @@
 <script setup>
-import { LogoutApi } from "@/api/user";
-import GrayButton from "@/components/button/GrayButton.vue";
+import "primeicons/primeicons.css";
+import { ref } from "vue";
 import router from "@/router";
+import { LogoutApi } from "@/api/user";
 
+// 변수
+const isToggle = ref(false);
+
+// 사이드바 메뉴 리스트
 const menuList = [
   {
     title: "대시보드",
     to: "/dashboard",
+    icon: "pi pi-table",
   },
   {
     title: "유저",
     to: "/users",
+    icon: "pi pi-user",
   },
   {
     title: "나라",
     to: "/country",
+    icon: "pi pi-map",
   },
   {
     title: "지역",
     to: "/location",
+    icon: "pi pi-sitemap",
   },
   {
     title: "옷",
     to: "/clothes",
+    icon: "pi pi-shop",
   },
 ];
+
+// 토글바 전환
+const sidebarToggle = () => {
+  isToggle.value = !isToggle.value;
+};
 
 // 로그아웃
 const logout = async () => {
@@ -41,46 +56,66 @@ const logout = async () => {
 </script>
 
 <template>
-  <div class="w-screen h-screen flex">
-    <!-- 사이드바 -->
-    <div class="w-[400px] h-full bg-gray-200 text-white">
-      <div class="h-[50px] bg-gray-900 flex justify-start items-center">
-        <div class="px-[20px]">
-          <h3 class="font-bold text-xl">관리자 대시보드</h3>
-        </div>
-      </div>
-      <div class="h-[calc(100vh-50px)] bg-gray-800 py-[20px]">
-        <div
-          class="flex flex-col justify-between h-full px-[20px] space-y-[10px]"
-        >
-          <div class="px-[20px] flex flex-col justify-between space-y-[10px]">
-            <!-- <div class="h-[calc(100%-50px)]"> -->
-            <router-link
-              v-for="(item, key) in menuList"
-              :key="key"
-              :to="item.to"
-            >
-              {{ item.title }}
-            </router-link>
-            <GrayButton value="button" text="로그아웃" :onclick="logout" />
-            <!-- </div> -->
-          </div>
+  <!-- 상단 타이틀 -->
+  <nav
+    class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+  >
+    <div class="px-3 py-3 lg:px-5 lg:pl-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center justify-start rtl:justify-end gap-5">
+          <button
+            data-drawer-target="logo-sidebar"
+            data-drawer-toggle="logo-sidebar"
+            aria-controls="logo-sidebar"
+            type="button"
+            @click="sidebarToggle"
+            class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          >
+            <i class="pi pi-bars" style="font-size: 1.5rem"></i>
+          </button>
+          <h1 class="font-bold text-2xl">관리자 페이지</h1>
         </div>
       </div>
     </div>
-    <div class="w-full h-full bg-gray-400">
-      <div
-        class="h-[50px] bg-gray-100 flex items-center shadow-sm px-[20px] w-full py-[10px] z-10 border-b"
-      >
-        <!-- 햄버거 메뉴 -->
-        <!-- Header sidebar -->
-      </div>
-      <div class="h-[calc(100vh-50px)] bg-gray-50 p-[20px]">
-        <div class="border border-gray-300 rounded-md p-[20px] h-full">
-          <!-- <router-view></router-view> -->
-        </div>
-      </div>
+  </nav>
+
+  <!-- 사이드바 -->
+  <aside
+    id="logo-sidebar"
+    class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+    :class="isToggle ? '' : '-translate-x-full'"
+    aria-label="Sidebar"
+  >
+    <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+      <ul class="space-y-2 font-medium">
+        <li v-for="(item, key) in menuList" :key="key">
+          <a
+            :href="item.to"
+            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+          >
+            <i :class="item.icon" style="font-size: 1.5rem"></i>
+            <span class="ms-3">{{ item.title }}</span>
+          </a>
+        </li>
+        <li>
+          <button
+            @click="logout"
+            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group w-full"
+          >
+            <i class="pi pi-sign-out" style="font-size: 1.5rem"></i>
+            <span class="ms-3">로그아웃</span>
+          </button>
+        </li>
+      </ul>
     </div>
-    <!-- Main -->
+  </aside>
+
+  <!-- 메인 -->
+  <div class="p-4 sm:ml-64">
+    <div
+      class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14"
+    >
+      <router-view />
+    </div>
   </div>
 </template>
